@@ -10,7 +10,7 @@ load_dotenv()
 TOKEN=os.getenv('TOKEN')
 
 try:
-    client = pymongo.MongoClient('mongodb+srv://onlyplayxerath:iEEzRNyrBjaPPfTt@cluster0.00l13mt.mongodb.net/?retryWrites=true&w=majority')
+    client = pymongo.MongoClient('mongodb+srv://onlyplayxerath:iEEzRNyrBjaPPfTt@cluster0.00l13mt.mongodb.net/?retryWrites=true&w=majority') 
     db = client["training-python"]
     collection = db['users']
     # ví dụ
