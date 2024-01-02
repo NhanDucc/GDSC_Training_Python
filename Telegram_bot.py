@@ -24,13 +24,21 @@ try:
 except Exception as e:
     print(e)
 
+# tạo 1 file để chứa các câu lệnh
+def write_to_file(text: str):
+    with open("test.txt", 'a') as f:
+        print(text, file = f)
+
 async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    write_to_file(f"{update.effective_user.first_name} : {update.message.text}")    # đây là câu để các câu lệnh được ghi lại vào 1 file
     await update.message.reply_text(f'Hello {update.effective_user.first_name}')
 
 async def dice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    write_to_file(f"{update.effective_user.first_name} : {update.message.text}")
     await update.message.reply_dice(emoji=DiceEmoji.DICE)
     
 async def add(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    write_to_file(f"{update.effective_user.first_name} : {update.message.text}")
     text = update.message.text[4:]
     word_list = text.split()
     name = word_list[0]
