@@ -24,13 +24,12 @@ try:
 except Exception as e:
     print(e)
 
-# tạo 1 file để chứa các câu lệnh
 def write_to_file(text: str):
     with open("test.txt", 'a') as f:
         print(text, file = f)
 
 async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    write_to_file(f"{update.effective_user.first_name} : {update.message.text}")    # đây là câu để các câu lệnh được ghi lại vào 1 file
+    write_to_file(f"{update.effective_user.first_name} : {update.message.text}")
     await update.message.reply_text(f'Hello {update.effective_user.first_name}')
 
 async def dice(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -79,11 +78,43 @@ async def message_handle(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         result += data['name'] + " - " + str(data['age']) + "\n"
     await update.message.reply_text(f"{result}" if result != "" else "This user is not available!")
 
+import requests
+ACCESS_KEY = "UbqUvxTSI_Gy8ujVb30UDzOzPWChAPEXuSetKNZV7RU"
+API_ADDRESS_RANDOM = f'https://api.unsplash.com/photos/random?client_id={ACCESS_KEY}'
+
+async def random_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    response = requests.get(API_ADDRESS_RANDOM)
+    if response.status_code == 200:
+        image_url = response.json().get('urls', {}).get('regular')
+        await update.message.reply_photo(photo = image_url, caption = "Random image from Unsplash")
+    else:
+         await update.message.reply_text("Somethings went wrong!")
+
+API_ADDRESS_SEARCH = f'https://api.unsplash.com/search/photos?client_id={ACCESS_KEY}&query='
+       
+async def search_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    response = requests.get(API_ADDRESS_SEARCH)
+    keyword = update.message.text[13:]
+    print(keyword)
+    if not keyword:
+        await update.message.reply_text("Please enter a keyword!")
+    else:
+        response = requests.get(API_ADDRESS_SEARCH + keyword)
+        if response.status_code == 200:
+            search_results = response.json().get('results')[:4]
+            for photo_info in search_results:
+                image_url = photo_info.get('urls', {}).get('regular')
+                await update.message.reply_photo(photo = image_url, caption = "Random image from Unsplash")
+        else:
+            await update.message.reply_text("Please enter a keyowrd!")
+        
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("hello", hello))
 app.add_handler(CommandHandler("dice", dice))
 app.add_handler(CommandHandler("add", add))
+app.add_handler(CommandHandler("randomimage", random_image))
+app.add_handler(CommandHandler("searchimage", search_image))
 app.add_handler(MessageHandler(filters.TEXT, message_handle))
 
 print("polling")
