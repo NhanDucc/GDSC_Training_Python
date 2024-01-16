@@ -1,4 +1,4 @@
-## Installation
+## Installation for Telegram bot chat
 ```bash
 pip install python-telegram-bot --upgrade
 pip install python-dotenv
